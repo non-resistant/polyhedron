@@ -1,4 +1,4 @@
-from math import sin, cos
+from math import sin, cos, sqrt
 
 
 class R3:
@@ -11,6 +11,10 @@ class R3:
     # Сумма векторов
     def __add__(self, other):
         return R3(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    # Модуль вектора
+    def __abs__(self):
+        return sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
 
     # Разность векторов
     def __sub__(self, other):
@@ -28,8 +32,9 @@ class R3:
 
     # Поворот вокруг оси Oy
     def ry(self, fi):
-        return R3(cos(fi) * self.x + sin(fi) * self.z,
-                  self.y, -sin(fi) * self.x + cos(fi) * self.z)
+        return R3(
+            cos(fi) * self.x + sin(fi) * self.z, self.y,
+            -sin(fi) * self.x + cos(fi) * self.z)
 
     # Скалярное произведение
     def dot(self, other):
@@ -37,10 +42,9 @@ class R3:
 
     # Векторное произведение
     def cross(self, other):
-        return R3(
-            self.y * other.z - self.z * other.y,
-            self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x)
+        return R3(self.y * other.z - self.z * other.y,
+                  self.z * other.x - self.x * other.z,
+                  self.x * other.y - self.y * other.x)
 
 
 if __name__ == "__main__":  # pragma: no cover

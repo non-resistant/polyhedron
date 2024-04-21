@@ -132,8 +132,24 @@ class Facet:
 
     # Центр грани
     def center(self):
-        return sum(self.vertexes, R3(0.0, 0.0, 0.0)) * \
-            (1.0 / len(self.vertexes))
+        return (sum(self.vertexes, R3(0.0, 0.0, 0.0)) *
+                (1.0 / len(self.vertexes)))
+
+    def original_center(self, polyedr):
+        return (self.center() /
+                self.scale).rz(-self.gamma).ry(-self.beta).rz(-self.alpha)
+
+    def perimeter_project(self):
+        s = 0
+        for i in range(len(self.vertexes)):
+            s += abs(
+                R3(self.vertexes[i].x, self.vertexes[i].y, 0) -
+                R3(self.vertexes[(i + 1) % len(self.vertexes)].x,
+                   self.vertexes[(i + 1) % len(self.vertexes)].y, 0))
+        return s
+
+    def appropriate(self):
+        return abs(f.original_center(self).x() - 2.) < 1.
 
     def edge_vis_class(self, polyedr):
         if self.edge_range is None:
@@ -167,9 +183,10 @@ class Polyedr:
                     # обрабатываем первую строку; buf - вспомогательный массив
                     buf = line.split()
                     # коэффициент гомотетии
-                    c = float(buf.pop(0))
+                    self.scale = float(buf.pop(0))
                     # углы Эйлера, определяющие вращение
-                    alpha, beta, gamma = (float(x) * pi / 180.0 for x in buf)
+                    self.alpha, self.beta, self.gamma = (float(x) * pi / 180.0
+                                                         for x in buf)
                 elif i == 1:
                     # во второй строке число вершин, граней и рёбер полиэдра
                     nv, nf, ne = (int(x) for x in line.split())
@@ -177,7 +194,8 @@ class Polyedr:
                     # задание всех вершин полиэдра
                     x, y, z = (float(x) for x in line.split())
                     self.vertexes.append(
-                        R3(x, y, z).rz(alpha).ry(beta).rz(gamma) * c)
+                        R3(x, y, z).rz(self.alpha).ry(self.beta).rz(self.gamma)
+                        * self.scale)
                 else:
                     # вспомогательный массив
                     buf = line.split()
@@ -199,3 +217,6 @@ class Polyedr:
                 e.shadow(f)
             for s in e.gaps:
                 tk.draw_line(e.r3(s.beg), e.r3(s.fin))
+
+    def character(self):
+        return sum(f.perimeter_project for f in self.facets if f.appropriate())
