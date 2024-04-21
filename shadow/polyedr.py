@@ -7,10 +7,14 @@ from common.tk_drawer import TkDrawer
 
 class Segment:
     """ Одномерный отрезок """
+
     # Параметры конструктора: начало и конец отрезка (числа)
 
     def __init__(self, beg, fin):
         self.beg, self.fin = beg, fin
+
+    def __eq__(self, other):
+        return self.beg == other.beg and self.fin == other.fin
 
     # Отрезок вырожден?
     def is_degenerate(self):
@@ -27,15 +31,19 @@ class Segment:
     # Разность отрезков
     # Разность двух отрезков всегда является списком из двух отрезков!
     def subtraction(self, other):
-        return [Segment(
-            self.beg, self.fin if self.fin < other.beg else other.beg),
-            Segment(self.beg if self.beg > other.fin else other.fin, self.fin)]
+        return [
+            Segment(self.beg, self.fin if self.fin < other.beg else other.beg),
+            Segment(self.beg if self.beg > other.fin else other.fin, self.fin)
+        ]
 
 
 class Edge:
     """ Ребро полиэдра """
     # Начало и конец стандартного одномерного отрезка
     SBEG, SFIN = 0.0, 1.0
+    VIS = 2
+    PARVIS = 1
+    INVIS = 0
 
     # Параметры конструктора: начало и конец ребра (точки в R3)
     def __init__(self, beg, fin):
@@ -56,14 +64,14 @@ class Edge:
                 return
 
         shade.intersect(
-            self.intersect_edge_with_normal(
-                facet.vertexes[0], facet.h_normal()))
+            self.intersect_edge_with_normal(facet.vertexes[0],
+                                            facet.h_normal()))
         if shade.is_degenerate():
             return
+
         # Преобразование списка «просветов», если тень невырождена
         gaps = [s.subtraction(shade) for s in self.gaps]
-        self.gaps = [
-            s for s in reduce(add, gaps, []) if not s.is_degenerate()]
+        self.gaps = [s for s in reduce(add, gaps, []) if not s.is_degenerate()]
 
     # Преобразование одномерных координат в трёхмерные
     def r3(self, t):
@@ -77,12 +85,21 @@ class Edge:
             return Segment(Edge.SFIN, Edge.SBEG)
         if f0 < 0.0 and f1 < 0.0:
             return Segment(Edge.SBEG, Edge.SFIN)
-        x = - f0 / (f1 - f0)
+        x = -f0 / (f1 - f0)
         return Segment(Edge.SBEG, x) if f0 < 0.0 else Segment(x, Edge.SFIN)
+
+    def visibility_class(self):
+        if len(self.gaps) == 0:
+            return Edge.INVIS
+        if len(self.gaps) == 1 and self.gaps[0] == Segment(
+                Edge.SBEG, Edge.SFIN):
+            return Edge.VIS
+        return Edge.PARVIS
 
 
 class Facet:
     """ Грань полиэдра """
+
     # Параметры конструктора: список вершин
 
     def __init__(self, vertexes):
@@ -94,9 +111,8 @@ class Facet:
 
     # Нормаль к «горизонтальному» полупространству
     def h_normal(self):
-        n = (
-            self.vertexes[1] - self.vertexes[0]).cross(
-            self.vertexes[2] - self.vertexes[0])
+        n = (self.vertexes[1] - self.vertexes[0]).cross(self.vertexes[2] -
+                                                        self.vertexes[0])
         return n * (-1.0) if n.dot(Polyedr.V) < 0.0 else n
 
     # Нормали к «вертикальным» полупространствам, причём k-я из них
@@ -144,8 +160,8 @@ class Polyedr:
                 elif i < nv + 2:
                     # задание всех вершин полиэдра
                     x, y, z = (float(x) for x in line.split())
-                    self.vertexes.append(R3(x, y, z).rz(
-                        alpha).ry(beta).rz(gamma) * c)
+                    self.vertexes.append(
+                        R3(x, y, z).rz(alpha).ry(beta).rz(gamma) * c)
                 else:
                     # вспомогательный массив
                     buf = line.split()
