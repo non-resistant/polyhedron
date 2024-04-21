@@ -101,8 +101,11 @@ class Facet:
     """ Грань полиэдра """
 
     # Параметры конструктора: список вершин
+    VIS = 2
+    PARVIS = 1
+    INVIS = 0
 
-    def __init__(self, vertexes):
+    def __init__(self, vertexes, edge_range=None):
         self.vertexes = vertexes
 
     # «Вертикальна» ли грань?
@@ -131,6 +134,19 @@ class Facet:
     def center(self):
         return sum(self.vertexes, R3(0.0, 0.0, 0.0)) * \
             (1.0 / len(self.vertexes))
+
+    def edge_vis_class(self, polyedr):
+        if self.edge_range is None:
+            raise RuntimeError("{self} does not contain it's edges' info.")
+        if (polyedr.edges[self.edge_range[0]].visibility_class() == Edge.PARVIS
+                or any(polyedr.edges[i - 1].visibility_class() !=
+                       polyedr.edges[i].visibility_class()
+                       for i in range(self.edge_range[0] +
+                                      1, self.edge_range[1]))):
+            return Facet.PARVIS
+        if polyedr.edges[self.edge_range[0]].visibility_class() == Edge.VIS:
+            return Facet.VIS
+        return Faset.INVIS
 
 
 class Polyedr:
