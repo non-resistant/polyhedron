@@ -112,3 +112,6 @@ class TestVoid(unittest.TestCase):
         s.shadow(f)
         self.assertEqual(len(s.gaps), 1)
         self.assertEqual(SegmentApproxMatcher(s.gaps[0]), Segment(0.0, 1.0))
+
+    def test_visibility_class0(self):
+        pass

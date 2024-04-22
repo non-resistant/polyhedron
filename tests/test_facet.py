@@ -70,3 +70,12 @@ class TestVoid(unittest.TestCase):
     def test_center02(self):
         f = Facet([R3(0.0, 0.0, 0.0), R3(3.0, 0.0, 0.0), R3(0.0, 3.0, 0.0)])
         self.assertEqual(R3ApproxMatcher(f.center()), (R3(1.0, 1.0, 0.0)))
+
+    def test_perimeter_project0(self):
+        pass
+
+    def test_appropriate0(self):
+        pass
+
+    def test_edge_vis_class0(self):
+        pass

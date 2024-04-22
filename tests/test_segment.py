@@ -12,6 +12,21 @@ def flatten(list):
 
 class TestSegment(unittest.TestCase):
 
+    def test_eq01(self):
+        self.assertFalse(Segment(0., .5) == Segment(.5, 0.))
+
+    def test_eq02(self):
+        self.assertTrue(Segment(.2, .5) == Segment(.2, .5))
+
+    def test_eq03(self):
+        self.assertFalse(Segment(0., .5) == Segment(0., 0.6))
+
+    def test_eq04(self):
+        self.assertFalse(Segment(.2, .5) == Segment(.4, .5))
+
+    def test_eq05(self):
+        self.assertTrue(Segment(.7, .3) == Segment(.7, .3))
+
     # Отрезок [0,1] является невырожденным
     def test_degenerate01(self):
         self.assertFalse(Segment(0.0, 1.0).is_degenerate())

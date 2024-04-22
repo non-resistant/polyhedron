@@ -1,4 +1,5 @@
 [run]
 omit =
     common/tk_drawer.py
-    
+    /usr/lib/python3/dist-packages/_distutils_hack/__init__.py
+
