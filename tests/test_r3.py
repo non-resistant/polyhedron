@@ -50,6 +50,30 @@ class TestR3(unittest.TestCase):
     def test_mul04(self):
         self.assertEqual(R3ApproxMatcher(self.a + self.a), self.a * 2)
 
+    def test_abs01(self):
+        self.assertAlmostEqual(abs(R3(0., 0., 0.)), 0.)
+
+    def test_abs02(self):
+        self.assertAlmostEqual(abs(R3(3., 0., 4.)), 5.)
+
+    def test_abs03(self):
+        self.assertAlmostEqual(abs(R3(-10., 2., 11.)), 15.)
+
+    def test_abs04(self):
+        self.assertAlmostEqual(abs(R3(1., -4., 8.)), 9.)
+
+    def test_abs05(self):
+        self.assertAlmostEqual(abs(R3(6., 13., -18.)), 23.)
+
+    def test_abs06(self):
+        self.assertAlmostEqual(abs(R3(-3., -4., 12.)), 13.)
+
+    def test_abs07(self):
+        self.assertAlmostEqual(abs(R3(-2., 10., -25.)), 27.)
+
+    def test_abs08(self):
+        self.assertAlmostEqual(abs(R3(10., -10., -23.)), 27.)
+
     def test_rz01(self):
         self.assertIsInstance(self.a.rz(45.0), R3)
 

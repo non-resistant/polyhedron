@@ -135,9 +135,9 @@ class Facet:
         return (sum(self.vertexes, R3(0.0, 0.0, 0.0)) *
                 (1.0 / len(self.vertexes)))
 
-    def original_center(self, polyedr):
-        return (self.center() /
-                self.scale).rz(-self.gamma).ry(-self.beta).rz(-self.alpha)
+    # def original_center(self, polyedr):
+    #     return (self.center() /
+    #             self.scale).rz(-self.gamma).ry(-self.beta).rz(-self.alpha)
 
     def perimeter_project(self):
         s = 0
@@ -149,7 +149,7 @@ class Facet:
         return s
 
     def appropriate(self):
-        return abs(f.original_center(self).x() - 2.) < 1.
+        return abs(f.center(self).x() - 2.) < 1.
 
     def edge_vis_class(self, polyedr):
         if self.edge_range is None:
