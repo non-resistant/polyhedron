@@ -37,5 +37,5 @@ class TestPolyedr(unittest.TestCase):
     def test_num_edges(self):
         self.assertEqual(len(self.polyedr.edges), 16)
 
-    def test_character0(self):
-        pass
+    def test_character01(self):
+        self.assertAlmostEqual(self.polyedr.character(), 0.)

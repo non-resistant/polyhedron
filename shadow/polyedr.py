@@ -107,6 +107,7 @@ class Facet:
 
     def __init__(self, vertexes, edge_range=None):
         self.vertexes = vertexes
+        self.edge_range = edge_range
 
     # «Вертикальна» ли грань?
     def is_vertical(self):
@@ -148,8 +149,8 @@ class Facet:
                    self.vertexes[(i + 1) % len(self.vertexes)].y, 0))
         return s
 
-    def appropriate(self):
-        return abs(f.center(self).x() - 2.) < 1.
+    def appropriate_center(self):
+        return abs(self.center().x - 2.) < 1.
 
     def edge_vis_class(self, polyedr):
         if self.edge_range is None:
@@ -162,7 +163,7 @@ class Facet:
             return Facet.PARVIS
         if polyedr.edges[self.edge_range[0]].visibility_class() == Edge.VIS:
             return Facet.VIS
-        return Faset.INVIS
+        return Facet.INVIS
 
 
 class Polyedr:
@@ -204,10 +205,12 @@ class Polyedr:
                     # массив вершин этой грани
                     vertexes = list(self.vertexes[int(n) - 1] for n in buf)
                     # задание рёбер грани
+                    edge_range = [len(self.edges)]
                     for n in range(size):
                         self.edges.append(Edge(vertexes[n - 1], vertexes[n]))
+                    edge_range.append(len(self.edges))
                     # задание самой грани
-                    self.facets.append(Facet(vertexes))
+                    self.facets.append(Facet(vertexes, edge_range))
 
     # Метод изображения полиэдра
     def draw(self, tk):  # pragma: no cover
@@ -219,4 +222,6 @@ class Polyedr:
                 tk.draw_line(e.r3(s.beg), e.r3(s.fin))
 
     def character(self):
-        return sum(f.perimeter_project for f in self.facets if f.appropriate())
+        return sum(
+            f.perimeter_project() for f in self.facets
+            if f.appropriate_center() and f.edge_vis_class() == Facet.INVIS)

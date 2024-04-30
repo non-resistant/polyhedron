@@ -60,46 +60,67 @@ class TestVoid(unittest.TestCase):
         s = Edge(R3(0.0, 0.0, 1.0), R3(1.0, 0.0, -1.0))
         a = R3(1.0, 1.0, 0.0)
         n = R3(0.0, 0.0, 1.0)
-        self.assertEqual(SegmentApproxMatcher(s.intersect_edge_with_normal(
-            a, n)), Segment(0.5, 1.0))
+        self.assertEqual(
+            SegmentApproxMatcher(s.intersect_edge_with_normal(a, n)),
+            Segment(0.5, 1.0))
 
     # Грань не затеняет ребро, принадлежащее этой же грани
     def test_shadow_01(self):
         s = Edge(R3(0.0, 0.0, 0.0), R3(1.0, 1.0, 0.0))
-        f = Facet([R3(0.0, 0.0, 0.0), R3(2.0, 0.0, 0.0),
-                   R3(2.0, 2.0, 0.0), R3(0.0, 2.0, 0.0)])
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
         s.shadow(f)
         self.assertEqual(SegmentApproxMatcher(s.gaps[0]), Segment(0.0, 1.0))
 
     # Грань не затеняет ребро, расположенное выше этой грани
     def test_shadow_02(self):
         s = Edge(R3(0.0, 0.0, 1.0), R3(1.0, 1.0, 1.0))
-        f = Facet([R3(0.0, 0.0, 0.0), R3(2.0, 0.0, 0.0),
-                   R3(2.0, 2.0, 0.0), R3(0.0, 2.0, 0.0)])
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
         s.shadow(f)
         self.assertEqual(SegmentApproxMatcher(s.gaps[0]), Segment(0.0, 1.0))
 
     # Грань полностью затеняет ребро, расположенное под этой гранью
     def test_shadow_03(self):
         s = Edge(R3(0.0, 0.0, -1.0), R3(1.0, 1.0, -1.0))
-        f = Facet([R3(0.0, 0.0, 0.0), R3(2.0, 0.0, 0.0),
-                   R3(2.0, 2.0, 0.0), R3(0.0, 2.0, 0.0)])
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
         s.shadow(f)
         self.assertEqual(len(s.gaps), 0)
 
     # На длинном ребре, лежащем ниже грани, образуется ровно два просвета
     def test_shadow_04(self):
         s = Edge(R3(-5.0, -5.0, -1.0), R3(3.0, 3.0, -1.0))
-        f = Facet([R3(0.0, 0.0, 0.0), R3(2.0, 0.0, 0.0),
-                   R3(2.0, 2.0, 0.0), R3(0.0, 2.0, 0.0)])
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
         s.shadow(f)
         self.assertEqual(len(s.gaps), 2)
 
     # «Вертикальная» грань не затеняет ничего
     def test_shadow_05(self):
         s = Edge(R3(0.0, 0.0, 0.0), R3(1.0, 1.0, 0.0))
-        f = Facet([R3(0.0, 0.0, 0.0), R3(0.0, 0.0, 1.0),
-                   R3(0.0, 1.0, 1.0), R3(0.0, 1.0, 0.0)])
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(0.0, 0.0, 1.0),
+            R3(0.0, 1.0, 1.0),
+            R3(0.0, 1.0, 0.0)
+        ])
         s.shadow(f)
         self.assertEqual(len(s.gaps), 1)
         self.assertEqual(SegmentApproxMatcher(s.gaps[0]), Segment(0.0, 1.0))
@@ -107,11 +128,93 @@ class TestVoid(unittest.TestCase):
     # Перпендикулярная грань не затеняет ничего
     def test_shadow_06(self):
         s = Edge(R3(0.0, 0.0, 0.0), R3(0.0, 0.0, -1.0))
-        f = Facet([R3(0.0, 0.0, 0.0), R3(1.0, 0.0, 0.0),
-                   R3(1.0, 1.0, 0.0), R3(0.0, 1.0, 0.0)])
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(1.0, 0.0, 0.0),
+            R3(1.0, 1.0, 0.0),
+            R3(0.0, 1.0, 0.0)
+        ])
         s.shadow(f)
         self.assertEqual(len(s.gaps), 1)
         self.assertEqual(SegmentApproxMatcher(s.gaps[0]), Segment(0.0, 1.0))
 
-    def test_visibility_class0(self):
-        pass
+    # Грань не затеняет ребро, принадлежащее этой же грани
+    def test_visibility_class01(self):
+        s = Edge(R3(0.0, 0.0, 0.0), R3(1.0, 1.0, 0.0))
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
+        s.shadow(f)
+        self.assertEqual(s.visibility_class(), Edge.VIS)
+        self.assertNotEqual(s.visibility_class(), Edge.PARVIS)
+        self.assertNotEqual(s.visibility_class(), Edge.INVIS)
+
+    # Грань не затеняет ребро, расположенное выше этой грани
+    def test_visibility_class02(self):
+        s = Edge(R3(0.0, 0.0, 1.0), R3(1.0, 1.0, 1.0))
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
+        s.shadow(f)
+        self.assertEqual(s.visibility_class(), Edge.VIS)
+        self.assertNotEqual(s.visibility_class(), Edge.PARVIS)
+        self.assertNotEqual(s.visibility_class(), Edge.INVIS)
+
+    # Грань полностью затеняет ребро, расположенное под этой гранью
+    def test_visibility_class03(self):
+        s = Edge(R3(0.0, 0.0, -1.0), R3(1.0, 1.0, -1.0))
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
+        s.shadow(f)
+        self.assertEqual(s.visibility_class(), Edge.INVIS)
+        self.assertNotEqual(s.visibility_class(), Edge.VIS)
+        self.assertNotEqual(s.visibility_class(), Edge.PARVIS)
+
+    # На длинном ребре, лежащем ниже грани, образуется ровно два просвета
+    def test_visibility_class04(self):
+        s = Edge(R3(-5.0, -5.0, -1.0), R3(3.0, 3.0, -1.0))
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(2.0, 0.0, 0.0),
+            R3(2.0, 2.0, 0.0),
+            R3(0.0, 2.0, 0.0)
+        ])
+        s.shadow(f)
+        self.assertEqual(s.visibility_class(), Edge.PARVIS)
+        self.assertNotEqual(s.visibility_class(), Edge.INVIS)
+        self.assertNotEqual(s.visibility_class(), Edge.VIS)
+
+    # «Вертикальная» грань не затеняет ничего
+    def test_visibility_class05(self):
+        s = Edge(R3(0.0, 0.0, 0.0), R3(1.0, 1.0, 0.0))
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(0.0, 0.0, 1.0),
+            R3(0.0, 1.0, 1.0),
+            R3(0.0, 1.0, 0.0)
+        ])
+        s.shadow(f)
+
+    # Перпендикулярная грань не затеняет ничего
+    def test_visibility_class06(self):
+        s = Edge(R3(0.0, 0.0, 0.0), R3(0.0, 0.0, -1.0))
+        f = Facet([
+            R3(0.0, 0.0, 0.0),
+            R3(1.0, 0.0, 0.0),
+            R3(1.0, 1.0, 0.0),
+            R3(0.0, 1.0, 0.0)
+        ])
+        s.shadow(f)
+        self.assertEqual(s.visibility_class(), Edge.VIS)
+        self.assertNotEqual(s.visibility_class(), Edge.PARVIS)
+        self.assertNotEqual(s.visibility_class(), Edge.INVIS)
