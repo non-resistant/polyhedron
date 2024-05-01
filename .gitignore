@@ -2,3 +2,7 @@
 .pytest_cache
 .coverage
 .kateproject.notes
+__pycache__/
+*.pyc
+htmlcov/
+.idea/
