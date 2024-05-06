@@ -222,6 +222,5 @@ class Polyedr:
                 tk.draw_line(e.r3(s.beg), e.r3(s.fin))
 
     def character(self):
-        return sum(
-            f.perimeter_project() for f in self.facets
-            if f.appropriate_center() and f.edge_vis_class() == Facet.INVIS)
+        return sum(f.perimeter_project() for f in self.facets if (
+            f.appropriate_center() and f.edge_vis_class(self) == Facet.INVIS))
